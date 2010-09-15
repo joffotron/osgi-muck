@@ -43,7 +43,7 @@ define_with_central_layout('osgimuck', true, false ) do
   compile.options.target = '1.6'
   compile.options.lint = 'all'
 
-  #ipr.template = _('etc/project-template.ipr')
+  ipr.template = _('etc/project-template.ipr')
 
   desc "Greeting data provider"
   define_with_central_layout 'greeter' do

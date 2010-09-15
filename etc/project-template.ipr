@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="InspectionProjectProfileManager">
+    <profiles>
+      <profile version="1.0" is_locked="false">
+        <inspection_tool class="SpellCheckingInspection" enabled="false" level="TYPO" enabled_by_default="false">
+          <option name="processCode" value="true"/>
+          <option name="processLiterals" value="true"/>
+          <option name="processComments" value="true"/>
+        </inspection_tool>
+      </profile>
+    </profiles>
+  </component>
+</project>
