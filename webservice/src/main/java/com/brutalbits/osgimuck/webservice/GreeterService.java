@@ -1,3 +1,5 @@
+package com.brutalbits.osgimuck.webservice;
+
 import com.brutalbits.osgimuck.greeter.api.Greeter;
 import javax.jws.WebMethod;
 import javax.jws.WebService;

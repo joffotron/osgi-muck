@@ -35,7 +35,6 @@ def define_with_central_layout(name, top_level = false, use_subdir = true, & blo
   define(name, :layout => CentralLayout.new(name, top_level, use_subdir), & block)
 end
 
-
 desc 'Mucking around in OSGi'
 define_with_central_layout('osgimuck', true, false ) do
   project.version = '1.0'
