@@ -20,23 +20,8 @@ OSGI_COMPENDIUM = 'org.apache.felix:org.osgi.compendium:jar:1.4.0'
 
 KARAF_DIR="C:/java/apache-karaf-2.0.1-SNAPSHOT/"
 
-class CentralLayout < Layout::Default
-  def initialize(key, top_level, use_subdir)
-    super()
-    prefix = top_level ? '' : '../'
-    subdir = use_subdir ? "/#{key}" : ''
-    self[:target] = "#{prefix}target#{subdir}"
-    self[:target, :main] = "#{prefix}target#{subdir}"
-    self[:reports] = "#{prefix}reports#{subdir}"
-  end
-end
-
-def define_with_central_layout(name, top_level = false, use_subdir = true, & block)
-  define(name, :layout => CentralLayout.new(name, top_level, use_subdir), & block)
-end
-
 desc 'Mucking around in OSGi'
-define_with_central_layout('osgimuck', true, false ) do
+define 'osgimuck' do
   project.version = '1.0'
   project.group = 'brutalbits'
   compile.options.source = '1.6'
@@ -46,24 +31,25 @@ define_with_central_layout('osgimuck', true, false ) do
   ipr.template = _('etc/project-template.ipr')
 
   desc "Greeting data provider"
-  define_with_central_layout 'greeter' do
-    compile.with OSGI_CORE
-    test.using :testng
+   define 'greeter' do
+     compile.with OSGI_CORE
+     test.using :testng
 
-    package(:bundle).tap do |bnd|
-      bnd['Export-Package'] = "com.brutalbits.osgimuck.greeter.api.*;version=#{version}"
-      bnd['Bundle-Activator'] = "com.brutalbits.osgimuck.greeter.GreetingActivator"
-    end
-  end
+     package(:bundle).tap do |bnd|
+       bnd['Private-Package'] = "com.brutalbits.osgimuck.greeter.*"
+       bnd['Export-Package'] = "com.brutalbits.osgimuck.greeter.api.*;version=#{version}"
+       bnd['Bundle-Activator'] = "com.brutalbits.osgimuck.greeter.GreetingActivator"
+     end
+   end
 
   desc "Greeter WebService"
-  define_with_central_layout 'webservice'  do
+  define 'webservice'  do
     compile.with OSGI_CORE, projects('greeter')
     test.using :testng
 
     package(:bundle).tap do |bnd|
       bnd['Export-Package'] = "com.brutalbits.osgimuck.webservice.*;version=#{version}"
-      bnd['Bundle-Activator'] = "com.brutalbits.osgimuck.webservice.GreetingService"
+      bnd['Bundle-Activator'] = "com.brutalbits.osgimuck.webservice.GreeterServiceActivator"
     end
 
   end
