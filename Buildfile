@@ -31,26 +31,44 @@ define 'osgimuck' do
   ipr.template = _('etc/project-template.ipr')
 
   desc "Greeting data provider"
-   define 'greeter' do
-     compile.with OSGI_CORE
-     test.using :testng
-
-     package(:bundle).tap do |bnd|
-       bnd['Private-Package'] = "com.brutalbits.osgimuck.greeter.*"
-       bnd['Export-Package'] = "com.brutalbits.osgimuck.greeter.api.*;version=#{version}"
-       bnd['Bundle-Activator'] = "com.brutalbits.osgimuck.greeter.GreetingActivator"
-     end
-   end
-
-  desc "Greeter WebService"
-  define 'webservice'  do
-    compile.with OSGI_CORE, projects('greeter')
+  define 'greeter' do
+    compile.with OSGI_CORE
     test.using :testng
 
     package(:bundle).tap do |bnd|
-      bnd['Export-Package'] = "com.brutalbits.osgimuck.webservice.*;version=#{version}"
-      bnd['Bundle-Activator'] = "com.brutalbits.osgimuck.webservice.GreeterServiceActivator"
+      bnd['Private-Package'] = "com.brutalbits.osgimuck.greeter.*"
+      bnd['Export-Package'] = "com.brutalbits.osgimuck.greeter.api.*;version=#{version}"
+      bnd['Bundle-Activator'] = "com.brutalbits.osgimuck.greeter.WatchActivator"
     end
+  end
+
+  desc "Greeter WebService"
+  define 'webservice' do
+    compile.with OSGI_CORE, projects('greeter')
+    test.using :testng
+
+    package(:war).with(
+      :libs => [],   #override so don't package the other project, or OSGI_CORE
+
+      :manifest =>
+      {
+        'Private-Package' => 'com.brutalbits.osgimuck.webservice',
+        #Buildr is spliting the import package into seperate lines, which breaks the deployment :(
+        'Import-Package' => 'javax.jws;version="2.0",org.osgi.framework;version="1.5",com.brutalbits.osgimuck.greeter.api;version="1.0"',
+        'Web-ContextPath' => "/MyServices",
+        'Bundle-ClassPath' => 'WEB-INF/classes/',
+        'Bundle-Name' => 'Web Service module of our application',
+        'Bundle-ManifestVersion' => '2',
+        'Bundle-SymbolicName' => 'com.brutalbits.osgimuck.webservice',
+        'Bundle-Version' => '1.0.0',
+        'Tool' => 'Bnd-0.0.311-not-really',
+        'Bnd-LastModified' => '1284533928268'
+      })
+
+    #package(:bundle).tap do |bnd|
+    #  bnd['Export-Package'] = "com.brutalbits.osgimuck.webservice.*;version=#{version}"
+    #  bnd['Bundle-Activator'] = "com.brutalbits.osgimuck.webservice.GreeterServiceActivator"
+    #end
 
   end
 
